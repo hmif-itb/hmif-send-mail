@@ -15,8 +15,6 @@ def csv_to_recipients(filename):
     for row in rows[1:]:
         params = {}
         for idx, val in enumerate(row):
-            if col[idx] == "":
-                continue
             params[col[idx]] = val
         entity = MailRecipientEntity(**params)
         recipients.append(entity)
