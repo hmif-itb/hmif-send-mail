@@ -2,8 +2,6 @@ import os
 import json
 import boto3
 
-from .helpers import dump_to_json
-
 class Mailer:
     def __init__(self, name=None, email=None):
         if name:
@@ -18,22 +16,6 @@ class Mailer:
     
     def set_email(self, email):
         self.email = email
-
-    def create_json_send(self, recipient, template):
-        tmp = {}
-        tmp["Source"] = f"{self.name} <{self.email}>"
-        tmp["Template"] = template
-        tmp["ConfigurationSetName"] = "Mentoring-Lolos-Rendering"
-        tmp["Destination"] = {}
-        tmp["Destination"]["ToAddresses"] = [recipient.email]
-        tmp["TemplateData"] = {}
-        items = vars(recipient)
-        for attr in items:
-            if attr == "email":
-                continue
-            tmp["TemplateData"][attr] = items[attr]
-        tmp["TemplateData"] = json.dumps(tmp["TemplateData"])
-        dump_to_json(tmp, "./tmp/tes.json")
 
     def send_mail_all(self, recipients, template):
         destinations = []

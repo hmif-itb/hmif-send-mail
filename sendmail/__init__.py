@@ -1,11 +1,7 @@
-
 import argparse
 from .helpers import yaml_parser
 from .mailer import Mailer
 from .utils import csv_to_recipients
-
-def test():
-    return ("hello world")
 
 def send_mail():
     parser = argparse.ArgumentParser()
