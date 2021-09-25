@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='sendmail',
-      version='0.1',
+      version='0.1.1',
       description='Template for sending email',
       url='https://github.com/hmif-itb/hmif-send-mail',
       author='HMIF Tech',
@@ -13,4 +13,5 @@ setup(name='sendmail',
           'requests',
           'boto3'
       ],
+      python_requires='>=3',
       zip_safe=False)
