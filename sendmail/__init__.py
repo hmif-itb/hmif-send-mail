@@ -22,7 +22,7 @@ def send_mail():
             
             for spec in items["spec"]:
                 template_name = spec["template"]
-                template_data = spec["receiver_data"]
+                template_data = spec["recipient_data"]
 
-                mail_receivers = csv_to_recipients(template_data)
-                mailer.send_mail_all(mail_receivers, template_name)
+                mail_recipients = csv_to_recipients(template_data)
+                mailer.send_mail_all(mail_recipients, template_name)
