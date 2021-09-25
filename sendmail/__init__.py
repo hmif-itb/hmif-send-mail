@@ -42,5 +42,8 @@ def main():
                     template_name = spec["template"]
                     template_data = spec["recipient_data"]
 
-                    mail_recipients = csv_to_recipients(template_data)
-                    mailer.send_mail_all(mail_recipients, template_name)
+                    try:
+                        mail_recipients = csv_to_recipients(template_data)
+                        mailer.send_mail_all(mail_recipients, template_name)
+                    except Exception as e:
+                        print(e)
