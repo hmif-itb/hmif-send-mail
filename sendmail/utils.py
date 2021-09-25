@@ -1,8 +1,8 @@
 from .helpers import dump_to_json, read_csv
 from .mailer import Mailer
-from .receiver import MailReceiverEntity
+from .recipient import MailRecipientEntity
 
-def csv_to_receivers(filename):
+def csv_to_recipients(filename):
     rows = read_csv(filename)
     header = rows[0]
     delimiter = ","
@@ -11,14 +11,14 @@ def csv_to_receivers(filename):
     for attr in header:
         col.append(str(attr))
 
-    mail_receivers = []
+    recipients = []
     for row in rows[1:]:
         params = {}
         for idx, val in enumerate(row):
             if col[idx] == "":
                 continue
             params[col[idx]] = val
-        entity = MailReceiverEntity(**params)
-        mail_receivers.append(entity)
+        entity = MailRecipientEntity(**params)
+        recipients.append(entity)
 
-    return mail_receivers
+    return recipients

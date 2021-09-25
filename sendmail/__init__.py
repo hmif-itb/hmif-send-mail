@@ -2,7 +2,7 @@
 import argparse
 from .helpers import yaml_parser
 from .mailer import Mailer
-from .utils import csv_to_receivers
+from .utils import csv_to_recipients
 
 def test():
     return ("hello world")
@@ -28,5 +28,5 @@ def send_mail():
                 template_name = spec["template"]
                 template_data = spec["receiver_data"]
 
-                mail_receivers = csv_to_receivers(template_data)
+                mail_receivers = csv_to_recipients(template_data)
                 mailer.send_mail_all(mail_receivers, template_name)

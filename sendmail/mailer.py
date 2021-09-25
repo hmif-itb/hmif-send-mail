@@ -19,15 +19,15 @@ class Mailer:
     def set_email(self, email):
         self.email = email
 
-    def create_json_send(self, receiver, template):
+    def create_json_send(self, recipient, template):
         tmp = {}
         tmp["Source"] = f"{self.name} <{self.email}>"
         tmp["Template"] = template
         tmp["ConfigurationSetName"] = "Mentoring-Lolos-Rendering"
         tmp["Destination"] = {}
-        tmp["Destination"]["ToAddresses"] = [receiver.email]
+        tmp["Destination"]["ToAddresses"] = [recipient.email]
         tmp["TemplateData"] = {}
-        items = vars(receiver)
+        items = vars(recipient)
         for attr in items:
             if attr == "email":
                 continue
@@ -35,14 +35,14 @@ class Mailer:
         tmp["TemplateData"] = json.dumps(tmp["TemplateData"])
         dump_to_json(tmp, "./tmp/tes.json")
 
-    def send_mail_all(self, receivers, template):
+    def send_mail_all(self, recipients, template):
         destinations = []
-        for receiver in receivers:
+        for recipient in recipients:
             obj = {}
             obj["Destination"] = {}
-            obj["Destination"]["ToAddresses"] = [receiver.email]
+            obj["Destination"]["ToAddresses"] = [recipient.email]
             obj["ReplacementTemplateData"] = {}
-            items = vars(receiver)
+            items = vars(recipient)
             for attr in items:
                 if attr == "email":
                     continue
@@ -51,7 +51,7 @@ class Mailer:
             destinations.append(obj)
 
         default = {}
-        for attr in vars(receivers[0]):
+        for attr in vars(recipients[0]):
             default[attr] = attr
         default_template_data = json.dumps(default)
 
