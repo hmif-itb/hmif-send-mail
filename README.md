@@ -76,7 +76,7 @@ python -m sendmail --mode=create_template --service=aws --template-name=Template
 
 | Variable |  |
 | ------------- | ------------- | 
-| `name` | Required |
+| `template-name` | Required |
 | `subject`| Required |
 | `txt` | Optional |  
 | `html` | Optional |
