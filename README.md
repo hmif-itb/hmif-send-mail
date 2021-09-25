@@ -3,6 +3,19 @@
 Python package for automated mail sending
 
 ## Installation
+
+### Building from source
+Before building, you need to have setuptools and wheel installed:
+```bash
+python -m pip install --upgrade setuptools wheel
+```
+
+Then build the package and install the distribution. For the second command, change the version accordingly
+```bash
+python setup.py bdist_wheel && python -m pip install dist/sendmail-1.0.0-py3-none-any.whl
+```
+
+### Installing from PyPi (Currently not supported)
 ```bash
 python -m pip install sendmail
 ```
