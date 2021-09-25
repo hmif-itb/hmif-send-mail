@@ -2,6 +2,8 @@ import os
 import json
 import boto3
 
+from .helpers import file_to_raw
+
 class Mailer:
     def __init__(self, name=None, email=None):
         if name:
@@ -16,6 +18,22 @@ class Mailer:
     
     def set_email(self, email):
         self.email = email
+    
+    def create_template(self, template_name, subject, html_file, text_file):
+        try:
+            Template = {
+                "TemplateName": template_name,
+                "SubjectPart": subject,
+            }
+            if html_file:
+                Template["HtmlPart"] = file_to_raw(html_file)
+            if text_file:
+                Template["TextPart"] = file_to_raw(text_file)
+            _ = self.client.create_template(
+                Template=Template
+            )
+        except Exception as e:
+            print(e)
 
     def send_mail_all(self, recipients, template):
         destinations = []

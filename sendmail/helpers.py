@@ -2,7 +2,7 @@ import json
 import yaml
 import csv
 
-def html_to_raw(filename):
+def file_to_raw(filename):
     with open(filename, "r") as file:
         f = file.read()
         return f
@@ -10,14 +10,6 @@ def html_to_raw(filename):
 def dump_to_json(data, filename):
     with open(filename, "w", encoding="utf8") as file:
         json.dump(data, file, ensure_ascii=False)
-
-def create_template(template_name, subject, html_file):
-    template = {}
-    template["TemplateName"] = template_name
-    template["SubjectPart"] = subject
-    template["HtmlPart"] = html_to_raw(html_file)
-    data = {"Template": template}
-    dump_to_json(data, "tes.json")
 
 def read_csv(filename):
     rows = []

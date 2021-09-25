@@ -67,3 +67,16 @@ The following email would be sent to `test@example.com` from `info@hmif.tech`
 ```txt
 Hello Test Recipient! Your verdict is: success
 ```
+
+## Creating Mail Template for AWS SES
+
+```bash
+python -m sendmail --mode=create_template --service=aws --template-name=TemplateName --subject=Subject --txt=PathToTextFile --html=PathToHTMLFile
+```
+
+| Variable |  |
+| ------------- | ------------- | 
+| `name` | Required |
+| `subject`| Required |
+| `txt` | Optional |  
+| `html` | Optional |
