@@ -10,6 +10,7 @@ def test():
 def send_mail():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="yaml file as mail configuration")
+    parser.add_argument("--service", help="mail service")
     args = parser.parse_args()
 
     config_yaml_file = args.config
@@ -19,11 +20,13 @@ def send_mail():
         sender_name = items["sender"]["name"]
         sender_email = items["sender"]["email"]
 
-        mailer = Mailer(sender_name, sender_email)
-        
-        for spec in items["spec"]:
-            template_name = spec["template"]
-            template_data = spec["receiver_data"]
+        if args.service == "aws":
 
-            mail_receivers = csv_to_receivers(template_data)
-            mailer.send_mail_all(mail_receivers, template_name)
+            mailer = Mailer(sender_name, sender_email)
+            
+            for spec in items["spec"]:
+                template_name = spec["template"]
+                template_data = spec["receiver_data"]
+
+                mail_receivers = csv_to_receivers(template_data)
+                mailer.send_mail_all(mail_receivers, template_name)

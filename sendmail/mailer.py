@@ -1,5 +1,7 @@
 import os
 import json
+import boto3
+
 from .helpers import dump_to_json
 
 class Mailer:
@@ -9,15 +11,13 @@ class Mailer:
         if email:
             self.set_email(email)
 
+        self.client = boto3.client('ses')
+
     def set_name(self, name):
         self.name = name
     
     def set_email(self, email):
         self.email = email
-
-    def send(self, receiver, template):
-        self.create_json_send(receiver, template)
-        os.system('cmd /c "aws ses send-templated-email --cli-input-json file://tmp/tes.json"')
 
     def create_json_send(self, receiver, template):
         tmp = {}
@@ -35,16 +35,8 @@ class Mailer:
         tmp["TemplateData"] = json.dumps(tmp["TemplateData"])
         dump_to_json(tmp, "./tmp/tes.json")
 
-    def send_mail_one_by_one(self, receivers, template):
-        for receiver in receivers:
-            self.send(receiver, template)
-    
     def send_mail_all(self, receivers, template):
-        tmp = {}
-        tmp["Source"] = f"{self.name} <{self.email}>"
-        tmp["Template"] = template
-        tmp["ConfigurationSetName"] = "Mentoring-Lolos-Rendering"
-        tmp["Destinations"] = []
+        destinations = []
         for receiver in receivers:
             obj = {}
             obj["Destination"] = {}
@@ -56,10 +48,20 @@ class Mailer:
                     continue
                 obj["ReplacementTemplateData"][attr] = items[attr]
             obj["ReplacementTemplateData"] = json.dumps(obj["ReplacementTemplateData"])
-            tmp["Destinations"].append(obj)
+            destinations.append(obj)
+
         default = {}
         for attr in vars(receivers[0]):
             default[attr] = attr
-        tmp["DefaultTemplateData"] = json.dumps(default)
-        dump_to_json(tmp, "./tmp/tes.json")
-        os.system('cmd /c "aws ses send-bulk-templated-email --cli-input-json file://tmp/tes.json"')
+        default_template_data = json.dumps(default)
+
+        try:
+            _ = self.client.send_bulk_templated_email(
+                Source=f"{self.name} <{self.email}>",
+                ConfigurationSetName="Mentoring-Lolos-Rendering",
+                Template=template,
+                DefaultTemplateData=default_template_data,
+                Destinations=destinations
+            )
+        except Exception as e:
+            print(e)
