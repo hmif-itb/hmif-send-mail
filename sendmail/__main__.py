@@ -1,3 +1,3 @@
-from . import send_mail
+from . import main
 
-send_mail()
+main()
