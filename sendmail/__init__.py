@@ -3,6 +3,9 @@ from .helpers import yaml_parser
 from .mailer import Mailer
 from .utils import csv_to_recipients
 
+from .exceptions import TemplateNotFoundException
+from .exceptions import TemplateAndCSVNotMatchException
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="yaml file as mail configuration")
@@ -43,7 +46,13 @@ def main():
                     template_data = spec["recipient_data"]
 
                     try:
+                        mailer.check_template_exist(template_name)
+                        mailer.check_template_match(template_name, template_data)
                         mail_recipients = csv_to_recipients(template_data)
                         mailer.send_mail(mail_recipients, template_name)
+                    except TemplateNotFoundException as e:
+                        print(e)
+                    except TemplateAndCSVNotMatchException as e:
+                        print(e)
                     except Exception as e:
                         print(e)

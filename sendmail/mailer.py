@@ -1,9 +1,14 @@
 import os
 import json
 import boto3
+import re
 from tqdm import tqdm
 
 from .helpers import file_to_raw
+from .helpers import get_csv_headers
+from botocore.exceptions import ClientError
+from .exceptions import TemplateNotFoundException
+from .exceptions import TemplateAndCSVNotMatchException
 
 class Mailer:
     def __init__(self, name=None, email=None):
@@ -35,6 +40,41 @@ class Mailer:
             )
         except Exception as e:
             print(e)
+    
+    def set_template(self, template):
+        if "HtmlPart" in template:
+            self.template_html = template["HtmlPart"]
+        if "TextPart" in template:
+            self.template_txt = template["TextPart"]
+
+    def check_template_exist(self, template_name):
+        try:
+            r = self.client.get_template(
+                TemplateName=template_name
+            )
+            self.set_template(r["Template"])
+        except ClientError as e:
+            if e.response['Error']['Code'] == "TemplateDoesNotExist":
+                raise TemplateNotFoundException(template_name)
+    
+    def get_vars_from_template(self, raw_template):
+        tokens = re.findall("{{ [^}]* }}", raw_template)
+        tokens = list(map(lambda x: x[3:-3], tokens))
+        return tokens
+
+    def check_template_match(self, template_name, template_data):
+        variables = []
+        if self.template_html:
+            variables = self.get_vars_from_template(self.template_html)
+        elif self.template_txt:
+            variables = self.get_vars_from_template(self.template_txt)
+        else:
+            raise TemplateNotFoundException(template_name)
+        
+        headers = get_csv_headers(template_data)
+        for var in variables:
+            if var not in headers:
+                raise TemplateAndCSVNotMatchException(template_name, template_data, var)
 
     def send_mail(self, recipients, template):
         progress = tqdm(total=len(recipients))
