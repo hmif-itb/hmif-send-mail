@@ -1,6 +1,7 @@
 import os
 import json
 import boto3
+from tqdm import tqdm
 
 from .helpers import file_to_raw
 
@@ -36,6 +37,7 @@ class Mailer:
             print(e)
 
     def send_mail(self, recipients, template):
+        progress = tqdm(total=len(recipients))
         for recipient in recipients:
             destination = {}
             destination["ToAddresses"] = [recipient.email]
@@ -48,7 +50,8 @@ class Mailer:
                     Destination=destination,
                     TemplateData=template_data
                 )
-                print(f"Success sending to {recipient.email}")
+                print(f"\nSuccess sending to {recipient.email}")
+                progress.update(1)
             except Exception as e:
                 print(e)
 
