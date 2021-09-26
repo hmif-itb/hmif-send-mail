@@ -52,8 +52,9 @@ Hello {{ fullName }}! Your verdict is: {{ verdictStatus }}
 ```
 
 #### Content of data (`.csv`) file
-The first row of the csv file must contains all variables required in the template, and must contains `email` column.
-The `email` column is used for the recipients' email addresses.
+The first row of the csv file must contain all variables required in the template, otherwise `TemplateAndCSVNotMatchException` will be raised. <br>
+It also must contain `email` column, otherwise `EmailHeaderNotFoundException` will be raised.
+The `email` column is used as the recipient's address.
 
 ```csv
 email,fullName,verdictStatus
