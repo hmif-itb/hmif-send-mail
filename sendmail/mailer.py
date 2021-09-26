@@ -35,6 +35,23 @@ class Mailer:
         except Exception as e:
             print(e)
 
+    def send_mail(self, recipients, template):
+        for recipient in recipients:
+            destination = {}
+            destination["ToAddresses"] = [recipient.email]
+            template_data = json.dumps(vars(recipient))
+            try:
+                r = self.client.send_templated_email(
+                    Source=f"{self.name} <{self.email}>",
+                    ConfigurationSetName="Mentoring-Lolos-Rendering",
+                    Template=template,
+                    Destination=destination,
+                    TemplateData=template_data
+                )
+                print(f"Success sending to {recipient.email}")
+            except Exception as e:
+                print(e)
+
     def send_mail_all(self, recipients, template):
         destinations = []
         for recipient in recipients:

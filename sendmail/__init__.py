@@ -6,10 +6,10 @@ from .utils import csv_to_recipients
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", help="yaml file as mail configuration")
-    parser.add_argument("--service", help="mail service")
+    parser.add_argument("--service", help="mail service", default="aws")
     parser.add_argument("--mode", help="package app mode", default="send_email")
     parser.add_argument("--template-name", help="name of the template to be made")
-    parser.add_argument("--subject", help="subject of the email")
+    parser.add_argument("--subject", help="subject of the email", default="Congrats! Welcome to HMIF Mentoring program")
     parser.add_argument("--txt", help="txt template content of the email")
     parser.add_argument("--html", help="html template content of the email")
     args = parser.parse_args()
@@ -44,6 +44,6 @@ def main():
 
                     try:
                         mail_recipients = csv_to_recipients(template_data)
-                        mailer.send_mail_all(mail_recipients, template_name)
+                        mailer.send_mail(mail_recipients, template_name)
                     except Exception as e:
                         print(e)
