@@ -10,6 +10,7 @@ from botocore.exceptions import ClientError
 from .exceptions import TemplateNotFoundException
 from .exceptions import TemplateAndCSVNotMatchException
 
+
 class Mailer:
     def __init__(self, name=None, email=None):
         if name:
@@ -17,14 +18,14 @@ class Mailer:
         if email:
             self.set_email(email)
 
-        self.client = boto3.client('ses')
+        self.client = boto3.client("ses")
 
     def set_name(self, name):
         self.name = name
-    
+
     def set_email(self, email):
         self.email = email
-    
+
     def create_template(self, template_name, subject, html_file, text_file):
         try:
             Template = {
@@ -35,12 +36,10 @@ class Mailer:
                 Template["HtmlPart"] = file_to_raw(html_file)
             if text_file:
                 Template["TextPart"] = file_to_raw(text_file)
-            _ = self.client.create_template(
-                Template=Template
-            )
+            _ = self.client.create_template(Template=Template)
         except Exception as e:
             print(e)
-    
+
     def set_template(self, template):
         if "HtmlPart" in template:
             self.template_html = template["HtmlPart"]
@@ -49,14 +48,12 @@ class Mailer:
 
     def check_template_exist(self, template_name):
         try:
-            r = self.client.get_template(
-                TemplateName=template_name
-            )
+            r = self.client.get_template(TemplateName=template_name)
             self.set_template(r["Template"])
         except ClientError as e:
-            if e.response['Error']['Code'] == "TemplateDoesNotExist":
+            if e.response["Error"]["Code"] == "TemplateDoesNotExist":
                 raise TemplateNotFoundException(template_name)
-    
+
     def get_vars_from_template(self, raw_template):
         tokens = re.findall("{{ [^}]* }}", raw_template)
         tokens = list(map(lambda x: x[3:-3], tokens))
@@ -70,7 +67,7 @@ class Mailer:
             variables = self.get_vars_from_template(self.template_txt)
         else:
             raise TemplateNotFoundException(template_name)
-        
+
         headers = get_csv_headers(template_data)
         for var in variables:
             if var not in headers:
@@ -88,7 +85,7 @@ class Mailer:
                     ConfigurationSetName="Mentoring-Lolos-Rendering",
                     Template=template,
                     Destination=destination,
-                    TemplateData=template_data
+                    TemplateData=template_data,
                 )
                 print(f"\nSuccess sending to {recipient.email}")
                 progress.update(1)
@@ -121,7 +118,7 @@ class Mailer:
                 ConfigurationSetName="Mentoring-Lolos-Rendering",
                 Template=template,
                 DefaultTemplateData=default_template_data,
-                Destinations=destinations
+                Destinations=destinations,
             )
         except Exception as e:
             print(e)

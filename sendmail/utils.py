@@ -3,6 +3,7 @@ from .mailer import Mailer
 from .recipient import MailRecipientEntity
 from .exceptions import EmailHeaderNotFoundException
 
+
 def csv_to_recipients(filename):
     rows = read_csv(filename)
     header = rows[0]
@@ -11,7 +12,7 @@ def csv_to_recipients(filename):
     col = []
     for attr in header:
         col.append(str(attr))
-    
+
     if "email" not in col:
         raise EmailHeaderNotFoundException(filename)
 
